@@ -51,4 +51,6 @@ services:
       - 4000:4000
   neo-python:
     image: smaj/neo-python:latest
-    command: python3.5 /opt/neo-python/claim_neo_and_gas.py -o /wallet -p coz -w /wif
+    volumes:
+      - './wallets:/wallets'
+    command: python3.5 /opt/neo-python/claim_neo_and_gas.py -o /wallets/coz_wallet -p coz -w /wallets/coz_wif
