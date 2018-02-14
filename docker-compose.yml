@@ -1,0 +1,56 @@
+version: '2'
+services:
+  neo-privnet-node-one:
+    image: smaj/neo-privatenet-docker:latest
+    container_name: neo-privnet-node-one
+    command: /opt/node/neo-cli/ /wallets/wallet1.json one
+    ports:
+      - 10333:10333
+      - 20333:20333
+      - 30333:30333
+  neo-privnet-node-two:
+    image: smaj/neo-privatenet-docker:latest
+    container_name: neo-privnet-node-two
+    command: /opt/node/neo-cli/ /wallets/wallet2.json two
+    ports:
+      - 10334:10333
+      - 20334:20333
+      - 30334:30333
+  neo-privnet-node-three:
+    image: smaj/neo-privatenet-docker:latest
+    container_name: neo-privnet-node-three
+    command: /opt/node/neo-cli/ /wallets/wallet3.json three
+    ports:
+      - 10335:10333
+      - 20335:20333
+      - 30335:30333
+  neo-privnet-node-four:
+    image: smaj/neo-privatenet-docker:latest
+    container_name: neo-privnet-node-four
+    command: /opt/node/neo-cli/ /wallets/wallet4.json four
+    ports:
+      - 10336:10333
+      - 20336:20333
+      - 30336:30333
+  postgresql:
+    image: postgres
+    container_name: postgres
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+  neo-scan-db-migrator:
+    image: smaj/neo-scan-db-migrator:latest
+    environment:
+      MIX_ENV: "dev"
+      POSTGRESS_HOST: "postgres:5432"
+      SUCCESS_COMMANDS: "mix ecto.drop && mix ecto.create && mix ecto.migrate && mix phx.server"
+    working_dir: "/data"
+    ports:
+      - 4000:4000
+  neo-python:
+    image: smaj/neo-python:latest
+    volumes:
+      - './wallets:/wallets'
+    command: python3.5 /opt/neo-python/claim_neo_and_gas.py -o /wallets/coz_wallet -p coz -w /wallets/coz_wif

@@ -1,0 +1,16 @@
+version: 2
+jobs:
+  check_version:
+    docker:
+      - image: buildpack-deps:trusty
+    steps:
+      - checkout
+      - run: make check-version
+workflows:
+  version: 2
+  build:
+    jobs:
+      - check_version:
+          filters:
+            branches:
+              ignore: master
